@@ -3,7 +3,7 @@
  * Unofficial JavaScript SDK for GameAnalytics, REST API v2 version
  *
  * Orange Games
- * Build at 18-07-2016
+ * Build at 06-01-2017
  * Released under MIT License 
  */
 
@@ -37,7 +37,7 @@ var CryptoJS = CryptoJS || function(h, s) {
         },
         concat: function(a) {
             var c = this.words, d = a.words, b = this.sigBytes;
-            if (a = a.sigBytes, this.clamp(), b % 4) for (var e = 0; a > e; e++) c[b + e >>> 2] |= (d[e >>> 2] >>> 24 - 8 * (e % 4) & 255) << 24 - 8 * ((b + e) % 4); else if (65535 < d.length) for (e = 0; a > e; e += 4) c[b + e >>> 2] = d[e >>> 2]; else c.push.apply(c, d);
+            if (a = a.sigBytes, this.clamp(), b % 4) for (var e = 0; e < a; e++) c[b + e >>> 2] |= (d[e >>> 2] >>> 24 - 8 * (e % 4) & 255) << 24 - 8 * ((b + e) % 4); else if (65535 < d.length) for (e = 0; e < a; e += 4) c[b + e >>> 2] = d[e >>> 2]; else c.push.apply(c, d);
             return this.sigBytes += a, this;
         },
         clamp: function() {
@@ -49,32 +49,32 @@ var CryptoJS = CryptoJS || function(h, s) {
             return a.words = this.words.slice(0), a;
         },
         random: function(a) {
-            for (var c = [], d = 0; a > d; d += 4) c.push(4294967296 * h.random() | 0);
+            for (var c = [], d = 0; d < a; d += 4) c.push(4294967296 * h.random() | 0);
             return new r.init(c, a);
         }
     }), l = f.enc = {}, k = l.Hex = {
         stringify: function(a) {
             var c = a.words;
             a = a.sigBytes;
-            for (var d = [], b = 0; a > b; b++) {
+            for (var d = [], b = 0; b < a; b++) {
                 var e = c[b >>> 2] >>> 24 - 8 * (b % 4) & 255;
                 d.push((e >>> 4).toString(16)), d.push((15 & e).toString(16));
             }
             return d.join("");
         },
         parse: function(a) {
-            for (var c = a.length, d = [], b = 0; c > b; b += 2) d[b >>> 3] |= parseInt(a.substr(b, 2), 16) << 24 - 4 * (b % 8);
+            for (var c = a.length, d = [], b = 0; b < c; b += 2) d[b >>> 3] |= parseInt(a.substr(b, 2), 16) << 24 - 4 * (b % 8);
             return new r.init(d, c / 2);
         }
     }, n = l.Latin1 = {
         stringify: function(a) {
             var c = a.words;
             a = a.sigBytes;
-            for (var d = [], b = 0; a > b; b++) d.push(String.fromCharCode(c[b >>> 2] >>> 24 - 8 * (b % 4) & 255));
+            for (var d = [], b = 0; b < a; b++) d.push(String.fromCharCode(c[b >>> 2] >>> 24 - 8 * (b % 4) & 255));
             return d.join("");
         },
         parse: function(a) {
-            for (var c = a.length, d = [], b = 0; c > b; b++) d[b >>> 2] |= (255 & a.charCodeAt(b)) << 24 - 8 * (b % 4);
+            for (var c = a.length, d = [], b = 0; b < c; b++) d[b >>> 2] |= (255 & a.charCodeAt(b)) << 24 - 8 * (b % 4);
             return new r.init(d, c);
         }
     }, j = l.Utf8 = {
@@ -98,7 +98,7 @@ var CryptoJS = CryptoJS || function(h, s) {
         _process: function(a) {
             var c = this._data, d = c.words, b = c.sigBytes, e = this.blockSize, f = b / (4 * e), f = a ? h.ceil(f) : h.max((0 | f) - this._minBufferSize, 0);
             if (a = f * e, b = h.min(4 * a, b), a) {
-                for (var g = 0; a > g; g += e) this._doProcessBlock(d, g);
+                for (var g = 0; g < a; g += e) this._doProcessBlock(d, g);
                 g = d.splice(0, a), c.sigBytes -= b;
             }
             return new r.init(g, b);
@@ -146,7 +146,7 @@ var CryptoJS = CryptoJS || function(h, s) {
         var j;
         a: {
             j = k;
-            for (var u = h.sqrt(j), t = 2; u >= t; t++) if (!(j % t)) {
+            for (var u = h.sqrt(j), t = 2; t <= u; t++) if (!(j % t)) {
                 j = !1;
                 break a;
             }
@@ -189,7 +189,7 @@ var CryptoJS = CryptoJS || function(h, s) {
             f = this._hasher = new f.init(), "string" == typeof g && (g = s.parse(g));
             var h = f.blockSize, m = 4 * h;
             g.sigBytes > m && (g = f.finalize(g)), g.clamp();
-            for (var r = this._oKey = g.clone(), l = this._iKey = g.clone(), k = r.words, n = l.words, j = 0; h > j; j++) k[j] ^= 1549556828, 
+            for (var r = this._oKey = g.clone(), l = this._iKey = g.clone(), k = r.words, n = l.words, j = 0; j < h; j++) k[j] ^= 1549556828, 
             n[j] ^= 909522486;
             r.sigBytes = l.sigBytes = m, this.reset();
         },
@@ -211,14 +211,14 @@ var CryptoJS = CryptoJS || function(h, s) {
         stringify: function(b) {
             var e = b.words, f = b.sigBytes, c = this._map;
             b.clamp(), b = [];
-            for (var a = 0; f > a; a += 3) for (var d = (e[a >>> 2] >>> 24 - 8 * (a % 4) & 255) << 16 | (e[a + 1 >>> 2] >>> 24 - 8 * ((a + 1) % 4) & 255) << 8 | e[a + 2 >>> 2] >>> 24 - 8 * ((a + 2) % 4) & 255, g = 0; 4 > g && f > a + .75 * g; g++) b.push(c.charAt(d >>> 6 * (3 - g) & 63));
+            for (var a = 0; a < f; a += 3) for (var d = (e[a >>> 2] >>> 24 - 8 * (a % 4) & 255) << 16 | (e[a + 1 >>> 2] >>> 24 - 8 * ((a + 1) % 4) & 255) << 8 | e[a + 2 >>> 2] >>> 24 - 8 * ((a + 2) % 4) & 255, g = 0; 4 > g && a + .75 * g < f; g++) b.push(c.charAt(d >>> 6 * (3 - g) & 63));
             if (e = c.charAt(64)) for (;b.length % 4; ) b.push(e);
             return b.join("");
         },
         parse: function(b) {
             var e = b.length, f = this._map, c = f.charAt(64);
             c && (c = b.indexOf(c), -1 != c && (e = c));
-            for (var c = [], a = 0, d = 0; e > d; d++) if (d % 4) {
+            for (var c = [], a = 0, d = 0; d < e; d++) if (d % 4) {
                 var g = f.indexOf(b.charAt(d - 1)) << 2 * (d % 4), h = f.indexOf(b.charAt(d)) >>> 6 - 2 * (d % 4);
                 c[a >>> 2] |= (g | h) << 24 - 8 * (a % 4), a++;
             }
@@ -514,12 +514,13 @@ var GA;
             };
             user.facebook_id && (obj.facebook_id = user.facebook_id), 0 !== user.gender && 1 !== user.gender || (obj.gender = GA.Gender[user.gender]), 
             user.birth_year && (obj.birth_year = user.birth_year);
-            var ua = navigator.userAgent;
+            var ua = navigator.userAgent, platform = navigator.platform.toLowerCase();
             return ua.match(/iPad|iPod|iPhone/i) ? (obj.platform = GA.Platform[0], obj.device = ua.match(/iPad|iPod|iPhone/i)[0], 
             obj.manufacturer = "Apple", obj.os_version = GA.Platform[0] + " " + ua.match(/OS (\b[0-9]+_[0-9]+(?:_[0-9]+)?\b)/)[1].replace(/_/gi, ".")) : ua.match(/Android/i) ? (obj.platform = GA.Platform[1], 
-            obj.device = ua.match(/Mobile/i) ? "Phone" : "Tablet", obj.os_version = GA.Platform[1] + " " + ua.match(/Android (\d+(?:\.\d+)+);/)[1]) : ua.match(/Windows Phone/i) && (obj.platform = GA.Platform[2], 
-            obj.device = "Windows Phone", obj.os_version = GA.Platform[2] + " " + ua.match(/Phone (\d+(?:\.\d+)+);/)[1]), 
-            obj;
+            obj.device = ua.match(/Mobile/i) ? "Phone" : "Tablet", obj.os_version = GA.Platform[1] + " " + ua.match(/Android (\d+(?:\.\d+)+);/)[1]) : ua.match(/Windows Phone/i) ? (obj.platform = GA.Platform[2], 
+            obj.device = "Windows Phone", obj.os_version = GA.Platform[2] + " " + ua.match(/Phone (\d+(?:\.\d+)+);/)[1]) : platform.indexOf("mac") > -1 ? (obj.platform = GA.Platform[8], 
+            obj.os_version = obj.platform + " 10") : platform.indexOf("win") > -1 && (obj.platform = GA.Platform[2], 
+            obj.os_version = obj.platform + " 10"), obj;
         }
         function getBaseAnnotations() {
             var obj = {
@@ -548,7 +549,7 @@ var GA;
         var LocalStorage = function() {
             function LocalStorage() {}
             return LocalStorage.getItem = function(key) {
-                return LocalStorage.Available ? localStorage.getItem(LocalStorage.CacheKey + key) : void 0;
+                if (LocalStorage.Available) return localStorage.getItem(LocalStorage.CacheKey + key);
             }, LocalStorage.setItem = function(key, value) {
                 LocalStorage.Available && localStorage.setItem(LocalStorage.CacheKey + key, value);
             }, LocalStorage.Available = !1, LocalStorage.CacheKey = "GA:", LocalStorage;

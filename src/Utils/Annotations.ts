@@ -84,6 +84,7 @@ module GA
             }
 
             var ua:string = navigator.userAgent;
+            var platform:string = navigator.platform.toLowerCase();
 
             if(ua.match(/iPad|iPod|iPhone/i)){
                 //code for iPad here
@@ -104,6 +105,12 @@ module GA
                 obj.device = 'Windows Phone';
 
                 obj.os_version = GA.Platform[GA.Platform.windows] + ' ' + ua.match(/Phone (\d+(?:\.\d+)+);/)[1];
+            } else if(platform.indexOf('mac') > -1) {
+                obj.platform = GA.Platform[GA.Platform.mac_osx];
+                obj.os_version = obj.platform + ' 10';
+            } else if(platform.indexOf('win') > -1) {
+                obj.platform = GA.Platform[GA.Platform.windows];
+                obj.os_version = obj.platform + ' 10';
             }
 
             return obj;
